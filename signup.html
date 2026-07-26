@@ -63,4 +63,245 @@
                         <button type="button" onclick="togglePassword('confirmPassword')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#00d4ff] transition-colors">
                             <svg id="eye-icon-confirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.4
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Referral Code Field -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">
+                        Referral Code <span class="text-slate-500 text-xs">(Optional)</span>
+                    </label>
+                    <input type="text" id="referralCode" class="input-dark w-full px-4 py-3 rounded-xl text-white placeholder-slate-500 outline-none uppercase" placeholder="Enter referral code">
+                    <p class="text-xs text-slate-500 mt-1">Have a referral code? Enter it here to earn bonuses!</p>
+                </div>
+
+                <!-- Terms and Conditions Checkbox -->
+                <div class="flex items-start gap-3 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
+                    <input type="checkbox" id="termsCheckbox" required class="mt-1 w-4 h-4 text-[#00d4ff] bg-slate-800 border-slate-600 rounded focus:ring-[#00d4ff] cursor-pointer">
+                    <label for="termsCheckbox" class="text-sm text-slate-300 cursor-pointer leading-relaxed">
+                        I agree to the <a href="terms.html" target="_blank" class="text-[#00d4ff] hover:text-cyan-300 underline font-medium">Terms and Conditions</a> and <a href="privacy.html" target="_blank" class="text-[#00d4ff] hover:text-cyan-300 underline font-medium">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" id="registerBtn" class="w-full cyan-gradient text-black font-semibold py-3 rounded-xl hover:opacity-90 transition-all duration-300 shadow-lg mt-6 flex items-center justify-center">
+                    <span id="registerText">Create Account</span>
+                    <svg id="registerSpinner" class="hidden animate-spin ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-slate-400">Already have an account? 
+                    <a href="sign-in.html" class="text-[#00d4ff] font-semibold hover:text-cyan-300">Sign In</a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="index.html" class="text-slate-500 text-sm hover:text-white transition-colors">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        console.log("Signup script starting...");
+        const SUPABASE_URL = 'https://gicamioeiitrfwhtvqxv.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpY2FtaW9laWl0cmZ3aHR2cXh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NDc3NzEsImV4cCI6MjA5NjQyMzc3MX0.YD0A85STez01eTGi5szOlKmY2DwdZev_-3KVxUuoz8U';
+        
+        const mySupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const registerForm = document.getElementById('registerForm');
+        const errorMsg = document.getElementById('errorMsg');
+        const successMsg = document.getElementById('successMsg');
+        const registerText = document.getElementById('registerText');
+        const registerSpinner = document.getElementById('registerSpinner');
+        const registerBtn = document.getElementById('registerBtn');
+
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById('eye-icon-' + fieldId);
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>';
+                icon.classList.add('text-[#00d4ff]');
+            } else {
+                field.type = 'password';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+                icon.classList.remove('text-[#00d4ff]');
+            }
+        }
+
+        // Check for referral code in URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlReferralCode = urlParams.get('ref');
+        if (urlReferralCode) {
+            document.getElementById('referralCode').value = urlReferralCode.toUpperCase();
+        }
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.remove('hidden');
+            successMsg.classList.add('hidden');
+        }
+
+        function showSuccess(msg) {
+            successMsg.textContent = msg;
+            successMsg.classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+        }
+
+        function setLoading(loading) {
+            if (loading) {
+                registerText.textContent = 'Creating Account...';
+                registerSpinner.classList.remove('hidden');
+                registerBtn.disabled = true;
+                registerBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            } else {
+                registerText.textContent = 'Create Account';
+                registerSpinner.classList.add('hidden');
+                registerBtn.disabled = false;
+                registerBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        }
+
+        // Generate unique referral code
+        function generateReferralCode(userId, firstName) {
+            const prefix = firstName.substring(0, 3).toUpperCase();
+            const suffix = userId.substring(0, 6).toUpperCase();
+            return `${prefix}${suffix}`;
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            if (!termsCheckbox.checked) {
+                showError('Please accept the Terms and Conditions to continue.');
+                return;
+            }
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const referralCodeInput = document.getElementById('referralCode').value.trim().toUpperCase();
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match!');
+                return;
+            }
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters!');
+                return;
+            }
+
+            setLoading(true);
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+
+            try {
+                console.log("Attempting signup...");
+                
+                // Step 1: Create the user
+                const { data: authData, error: authError } = await mySupabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            first_name: firstName,
+                            last_name: lastName,
+                            full_name: `${firstName} ${lastName}`
+                        }
+                    }
+                });
+
+                if (authError) {
+                    showError('❌ ' + authError.message);
+                } else if (authData.user) {
+                    const userId = authData.user.id;
+                    
+                    // Step 2: Generate referral code for this user
+                    const userReferralCode = generateReferralCode(userId, firstName);
+                    
+                    // Step 3: Update user profile with referral code (NO welcome bonus)
+                    const { error: updateError } = await mySupabase
+                        .from('users')
+                        .update({ 
+                            referral_code: userReferralCode,
+                            balance: 0 // Starting balance is $0
+                        })
+                        .eq('id', userId);
+
+                    if (updateError) {
+                        console.error('Error updating user profile:', updateError);
+                    }
+
+                    // Step 4: Handle referral if code was provided
+                    if (referralCodeInput) {
+                        // Find the referrer
+                        const { data: referrer, error: referrerError } = await mySupabase
+                            .from('users')
+                            .select('id, referral_earnings')
+                            .eq('referral_code', referralCodeInput)
+                            .single();
+
+                        if (referrer && !referrerError) {
+                            // Record the referral
+                            await mySupabase.from('referrals').insert({
+                                referrer_id: referrer.id,
+                                referred_id: userId,
+                                referral_code: referralCodeInput,
+                                commission_earned: 10 // $10 commission for referrer
+                            });
+
+                            // Update referrer's earnings
+                            const newEarnings = (referrer.referral_earnings || 0) + 10;
+                            const newBalance = await getReferrerBalance(referrer.id);
+                            
+                            await mySupabase
+                                .from('users')
+                                .update({ 
+                                    referral_earnings: newEarnings,
+                                    balance: newBalance + 10 // Add $10 bonus to referrer
+                                })
+                                .eq('id', referrer.id);
+
+                            console.log('Referral recorded successfully!');
+                        } else {
+                            console.warn('Invalid referral code:', referralCodeInput);
+                        }
+                    }
+
+                    showSuccess('✅ Account created successfully! Redirecting to sign in...');
+                    registerForm.reset();
+                    setTimeout(() => {
+                        window.location.href = 'sign-in.html'; 
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('Signup error:', err);
+                showError('An unexpected error occurred.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Helper function to get referrer's current balance
+        async function getReferrerBalance(userId) {
+            const { data: user } = await mySupabase
+                .from('users')
+                .select('balance')
+                .eq('id', userId)
+                .single();
+            return user?.balance || 0;
+        }
+    </script>
+</body>
+</html>
