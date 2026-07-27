@@ -754,9 +754,8 @@
                 }
                 
                 container.innerHTML = allBots.map(bot => {
-                    // Scalper Pro has $100 minimum deposit
-                    const isScalperPro = bot.name && bot.name.toLowerCase().includes('scalper pro');
-                    const minDepositDisplay = isScalperPro ? '$100.00' : `$${(bot.min_deposit || 0).toFixed(2)}`;
+                    // Dynamically use the min_deposit from the database for all bots
+                    const minDepositDisplay = `$${(bot.min_deposit || 0).toFixed(2)}`;
                     
                     return `
                     <div class="bot-card glass-card rounded-xl p-5">
@@ -1059,16 +1058,10 @@
             document.getElementById('modalBotName').textContent = bot.name;
             document.getElementById('modalROI').textContent = `${bot.expected_roi}% / day`;
             
-            // Check if this is Scalper Pro ($100 minimum deposit)
-            const isScalperPro = bot.name && bot.name.toLowerCase().includes('scalper pro');
-            
-            if (isScalperPro) {
-                document.getElementById('minDepositText').textContent = `Minimum deposit: $100.00 | Your balance: $${userBalance.toFixed(2)}`;
-                document.getElementById('investAmount').min = 100;
-            } else {
-                document.getElementById('minDepositText').textContent = `Minimum deposit: $${(bot.min_deposit || 0).toFixed(2)} | Your balance: $${userBalance.toFixed(2)}`;
-                document.getElementById('investAmount').min = bot.min_deposit || 0;
-            }
+            // Dynamically use the min_deposit from the database for all bots
+            const minRequired = bot.min_deposit || 0;
+            document.getElementById('minDepositText').textContent = `Minimum deposit: $${minRequired.toFixed(2)} | Your balance: $${userBalance.toFixed(2)}`;
+            document.getElementById('investAmount').min = minRequired;
             
             const riskEl = document.getElementById('modalRisk');
             riskEl.textContent = bot.risk_level.charAt(0).toUpperCase() + bot.risk_level.slice(1);
@@ -1095,9 +1088,8 @@
                 return;
             }
             
-            // Check minimum deposit for Scalper Pro ($100) and other bots
-            const isScalperPro = bot.name && bot.name.toLowerCase().includes('scalper pro');
-            const minRequired = isScalperPro ? 100 : (bot.min_deposit || 0);
+            // Dynamically check minimum deposit from the database
+            const minRequired = bot.min_deposit || 0;
             
             if (amount < minRequired) {
                 errorEl.textContent = `Minimum deposit is $${minRequired.toFixed(2)}.`;
