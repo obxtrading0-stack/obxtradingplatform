@@ -25,27 +25,15 @@
             0%, 100% { filter: drop-shadow(0 0 3px rgba(0, 212, 255, 0.5)); }
             50% { filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8)); }
         }
-        .crown-icon {
-            animation: crownShine 2s ease-in-out infinite;
-        }
+        .crown-icon { animation: crownShine 2s ease-in-out infinite; }
 
         @keyframes profitPulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.8; transform: scale(1.05); }
         }
-        .countdown-timer {
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-        .countdown-warning {
-            color: #f59e0b !important;
-            animation: profitPulse 1s ease-in-out infinite;
-        }
-        .countdown-critical {
-            color: #ef4444 !important;
-            animation: profitPulse 0.5s ease-in-out infinite;
-        }
+        .countdown-timer { font-family: 'Courier New', monospace; letter-spacing: 1px; font-weight: 600; }
+        .countdown-warning { color: #f59e0b !important; animation: profitPulse 1s ease-in-out infinite; }
+        .countdown-critical { color: #ef4444 !important; animation: profitPulse 0.5s ease-in-out infinite; }
     </style>
 </head>
 <body class="gradient-bg min-h-screen text-slate-200">
@@ -88,6 +76,10 @@
                 <a href="profile.html" class="nav-item flex items-center px-6 py-3 text-slate-400 hover:text-white">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     Edit Profile
+                </a>
+                <a href="support.html" class="nav-item flex items-center px-6 py-3 text-slate-400 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    Support
                 </a>
             </nav>
             <div class="absolute bottom-0 w-full p-4 border-t border-slate-700/50">
@@ -209,11 +201,9 @@
         let allPlans = [];
         let selectedPlanId = null;
         let userBalance = 0;
-        
         let activeInvestments = [];
         let countdownInterval = null;
 
-        // FIXED: Helper to parse dates safely and force UTC if timezone is missing (Fixes the earnings jumping bug)
         function parseDate(dateStr) {
             if (!dateStr) return new Date();
             const str = String(dateStr);
@@ -224,17 +214,11 @@
         }
 
         function calculateReturn(amount) {
-            if (amount >= 10000) {
-                return 30000;
-            } else if (amount >= 2000) {
-                return 24000;
-            } else if (amount >= 500) {
-                return 9000;
-            } else if (amount >= 100) {
-                return 2000;
-            } else {
-                return 0;
-            }
+            if (amount >= 10000) return 30000;
+            if (amount >= 2000) return 24000;
+            if (amount >= 500) return 9000;
+            if (amount >= 100) return 2000;
+            return 0;
         }
 
         function getCrownIcon() {
@@ -285,7 +269,7 @@
                 allPlans = plans || [];
 
                 if (allPlans.length === 0) {
-                    container.innerHTML = '<p class="text-slate-400 col-span-full">No investment plans available at the moment.</p>';
+                    container.innerHTML = '<p class="text-slate-400 col-span-full text-center py-8">No investment plans available at the moment. Please check back later.</p>';
                     return;
                 }
 
@@ -323,7 +307,7 @@
                 `}).join('');
             } catch (err) {
                 console.error('Error loading plans:', err);
-                container.innerHTML = '<p class="text-red-400 col-span-full">Failed to load investment plans.</p>';
+                container.innerHTML = '<p class="text-red-400 col-span-full text-center py-8">Failed to load investment plans. Please try refreshing the page.</p>';
             }
         }
 
@@ -422,7 +406,7 @@
 
             } catch (err) {
                 console.error('Error loading investments:', err);
-                container.innerHTML = '<p class="text-red-400 col-span-full">Failed to load your investments.</p>';
+                container.innerHTML = '<p class="text-red-400 col-span-full text-center py-8">Failed to load your investments.</p>';
             }
         }
 
@@ -434,7 +418,6 @@
                 if (inv.status !== 'active') continue;
                 
                 const endDate = parseDate(inv.end_date);
-                // FIXED: Use invested_at as the exact start time to prevent earnings jumping
                 const startDate = inv.invested_at ? parseDate(inv.invested_at) : new Date(endDate.getTime() - (24 * 60 * 60 * 1000));
                 const now = new Date();
                 const timeLeft = endDate - now;
@@ -468,7 +451,6 @@
                         countdownEl.classList.add('countdown-warning');
                     }
                     
-                    // FIXED: Calculate progress strictly between 0 and 1
                     const totalDuration = endDate - startDate;
                     const elapsed = now - startDate;
                     const progress = Math.min(1, Math.max(0, elapsed / totalDuration));
@@ -535,7 +517,6 @@
             document.getElementById('modalPlanName').textContent = plan.name;
             
             const durationHours = 24;
-            
             document.getElementById('modalDuration').textContent = `${durationHours} hours`;
             document.getElementById('minInvestText').textContent = `Minimum investment: $${(plan.min_deposit || 0).toLocaleString()} | Your balance: $${userBalance.toFixed(2)}`;
             
@@ -597,7 +578,6 @@
                 
                 if (balanceError) throw balanceError;
 
-                // FIXED: Check if an investment for this plan already exists to avoid unique constraint errors
                 const { data: existingInv, error: checkError } = await mySupabase
                     .from('user_investments')
                     .select('id')
@@ -608,7 +588,6 @@
                 if (checkError) throw checkError;
 
                 if (existingInv) {
-                    // Update the existing record instead of deleting and inserting
                     const { error: updateError } = await mySupabase
                         .from('user_investments')
                         .update({
@@ -622,6 +601,57 @@
                     
                     if (updateError) throw updateError;
                 } else {
-                    // Insert new record if it doesn't exist
                     const { error: investError } = await mySupabase
                         .from('user_investments')
+                        .insert({
+                            user_id: currentUser.id,
+                            plan_id: selectedPlanId,
+                            invested_amount: amount,
+                            status: 'active',
+                            end_date: endDate.toISOString(),
+                            invested_at: new Date().toISOString(),
+                            total_earnings: 0
+                        });
+
+                    if (investError) throw investError;
+                }
+
+                await mySupabase.from('transactions').insert({
+                    user_id: currentUser.id,
+                    type: 'investment',
+                    amount: amount,
+                    status: 'approved',
+                    description: `Invested in ${plan.name}`,
+                    created_at: new Date().toISOString()
+                });
+
+                closeModal();
+                await loadMyInvestments();
+                userBalance = newBalance;
+                document.getElementById('headerBalance').textContent = `$${userBalance.toFixed(2)}`;
+                
+                const expectedReturn = calculateReturn(amount);
+                alert(`✅ Investment successful! You invested $${amount.toFixed(2)} in ${plan.name}. Expected return: $${expectedReturn.toLocaleString()} over 24 hours.`);
+            } catch (err) {
+                console.error('Investment error details:', err);
+                errorEl.textContent = 'Failed to process investment. Please try again.';
+                errorEl.classList.remove('hidden');
+            } finally {
+                document.getElementById('investBtn').disabled = false;
+                document.getElementById('investBtn').textContent = 'Invest Now';
+            }
+        }
+
+        function toggleSidebar() {}
+
+        async function logout() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            await mySupabase.auth.signOut();
+            window.location.href = 'sign-in.html';
+        }
+    </script>
+</body>
+</html>
