@@ -538,7 +538,8 @@
                 }, 1500);
             } catch (err) {
                 console.error('Profile update error:', err);
-                showError('Failed to update profile. Please try again.');
+                // This will now show the EXACT Supabase error on the screen
+                showError('Error: ' + (err.message || 'Failed to update profile. Check console for details.'));
             } finally {
                 setLoading('update', false);
                 document.getElementById('uploadProgress').classList.add('hidden');
@@ -577,8 +578,6 @@
                     return;
                 }
 
-                // Note: In a real app, you might not need to sign out and back in just to change password, 
-                // but Supabase handles password updates securely this way.
                 const { error: updateError } = await mySupabase.auth.updateUser({
                     password: newPassword
                 });
@@ -593,7 +592,7 @@
                 }, 2000);
             } catch (err) {
                 console.error('Password change error:', err);
-                showError('Failed to change password. Please try again.');
+                showError('Error: ' + (err.message || 'Failed to change password.'));
             } finally {
                 setLoading('password', false);
             }
