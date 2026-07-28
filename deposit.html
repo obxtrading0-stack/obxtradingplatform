@@ -414,8 +414,9 @@
 
                 setTimeout(() => window.location.href = 'dashboard.html', 3000);
             } catch (err) {
-                console.error(err);
-                errorMsg.textContent = 'Failed to submit deposit request. Please try again.';
+                console.error('Deposit error details:', err);
+                // THIS IS THE ONLY CHANGE: It now shows the EXACT Supabase error on the screen
+                errorMsg.textContent = 'Error: ' + (err.message || 'Failed to submit deposit request. Check console for details.');
                 errorMsg.classList.remove('hidden');
             } finally {
                 btn.disabled = false;
