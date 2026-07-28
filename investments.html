@@ -17,9 +17,6 @@
         .nav-item:hover, .nav-item.active { background: rgba(0, 212, 255, 0.15); border-right: 3px solid #00d4ff; color: white; }
         .input-dark { background: rgba(7, 17, 31, 0.8); border: 1px solid rgba(0, 212, 255, 0.3); transition: all 0.3s ease; }
         .input-dark:focus { border-color: #00d4ff; box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1); outline: none; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(7, 17, 31, 0.5); }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.5); border-radius: 3px; }
         
         @keyframes crownShine {
             0%, 100% { filter: drop-shadow(0 0 3px rgba(0, 212, 255, 0.5)); }
@@ -38,7 +35,6 @@
 </head>
 <body class="gradient-bg min-h-screen text-slate-200">
     <div class="flex min-h-screen">
-        <!-- Desktop Sidebar -->
         <aside class="sidebar w-64 fixed h-full hidden lg:block border-r border-slate-700/50 z-20">
             <div class="p-6">
                 <h1 class="text-2xl font-bold text-white"><span class="text-[#00d4ff]">OBX</span></h1>
@@ -90,7 +86,6 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 lg:ml-64 w-full">
             <header class="glass-card sticky top-0 z-10 px-6 py-4 flex items-center justify-between border-b border-slate-700/50">
                 <div class="flex items-center gap-4">
@@ -112,7 +107,6 @@
             </header>
 
             <div class="p-4 md:p-6 space-y-6">
-                <!-- Stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="glass-card rounded-xl p-5">
                         <p class="text-slate-400 text-sm">Active Investments</p>
@@ -128,34 +122,19 @@
                     </div>
                 </div>
 
-                <!-- My Investments -->
                 <div>
                     <h3 class="text-lg font-semibold text-white mb-4">My Investments</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="myInvestmentsContainer">
-                        <div class="glass-card rounded-xl p-5 animate-pulse">
-                            <div class="h-4 bg-slate-700 rounded w-3/4 mb-3"></div>
-                            <div class="h-3 bg-slate-700 rounded w-1/2 mb-2"></div>
-                            <div class="h-10 bg-slate-700 rounded mt-4"></div>
-                        </div>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="myInvestmentsContainer"></div>
                 </div>
 
-                <!-- Available Plans -->
                 <div>
                     <h3 class="text-lg font-semibold text-white mb-4">Available Investment Plans</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="plansContainer">
-                        <div class="glass-card rounded-xl p-5 animate-pulse">
-                            <div class="h-4 bg-slate-700 rounded w-3/4 mb-3"></div>
-                            <div class="h-3 bg-slate-700 rounded w-1/2 mb-2"></div>
-                            <div class="h-10 bg-slate-700 rounded mt-4"></div>
-                        </div>
-                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="plansContainer"></div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Invest Modal -->
     <div id="investModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4">
@@ -269,7 +248,7 @@
                 allPlans = plans || [];
 
                 if (allPlans.length === 0) {
-                    container.innerHTML = '<p class="text-slate-400 col-span-full text-center py-8">No investment plans available at the moment. Please check back later.</p>';
+                    container.innerHTML = '<p class="text-slate-400 col-span-full text-center py-8">No investment plans available at the moment.</p>';
                     return;
                 }
 
@@ -300,14 +279,14 @@
                                 <span class="text-green-400 font-bold">$${expectedReturn.toLocaleString()}</span>
                             </div>
                         </div>
-                        <button onclick="openModal(${plan.id})" class="block w-full text-center cyan-gradient text-black font-medium py-2.5 rounded-lg hover:opacity-90 transition-all text-sm shadow-lg">
+                        <button onclick="openModal('${plan.id}')" class="block w-full text-center cyan-gradient text-black font-medium py-2.5 rounded-lg hover:opacity-90 transition-all text-sm shadow-lg">
                             Invest Now
                         </button>
                     </div>
                 `}).join('');
             } catch (err) {
                 console.error('Error loading plans:', err);
-                container.innerHTML = '<p class="text-red-400 col-span-full text-center py-8">Failed to load investment plans. Please try refreshing the page.</p>';
+                container.innerHTML = '<p class="text-red-400 col-span-full text-center py-8">Failed to load investment plans.</p>';
             }
         }
 
@@ -386,10 +365,6 @@
                                 <div class="flex justify-between">
                                     <span class="text-slate-400">Time Left:</span>
                                     <span id="countdown-${inv.id}" class="text-white font-medium countdown-timer">24:00:00</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-400">Start Time:</span>
-                                    <span class="text-slate-300">${parseDate(inv.invested_at || (parseDate(inv.end_date).getTime() - (24 * 60 * 60 * 1000))).toLocaleString()}</span>
                                 </div>
                             </div>
                         </div>
@@ -634,7 +609,8 @@
                 alert(`✅ Investment successful! You invested $${amount.toFixed(2)} in ${plan.name}. Expected return: $${expectedReturn.toLocaleString()} over 24 hours.`);
             } catch (err) {
                 console.error('Investment error details:', err);
-                errorEl.textContent = 'Failed to process investment. Please try again.';
+                // This will now show the exact Supabase error on the screen
+                errorEl.textContent = 'Error: ' + (err.message || 'Failed to process investment. Check console for details.');
                 errorEl.classList.remove('hidden');
             } finally {
                 document.getElementById('investBtn').disabled = false;
