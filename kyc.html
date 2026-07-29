@@ -282,7 +282,8 @@
 
             } catch (err) {
                 console.error('KYC Error:', err);
-                showError('Failed to submit verification. Please check your file size and try again.');
+                // UPDATED: This now shows the EXACT Supabase error message on the screen
+                showError('Error: ' + (err.message || 'Failed to submit verification. Please check console for details.'));
             } finally {
                 setLoading(false);
             }
